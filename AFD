@@ -1,0 +1,19 @@
+digraph "AFD Direct" {
+	rankdir=LR
+	A [fillcolor="#87CEEB" rank=same shape=circle style=filled]
+	node [shape=circle]
+	A -> B [label=a]
+	node [shape=circle]
+	B -> C [label=a]
+	node [shape=circle]
+	B -> B [label=b]
+	node [shape=circle]
+	C -> C [label=a]
+	D [rank=same shape=doublecircle]
+	node [shape=circle]
+	C -> D [label=b]
+	node [shape=circle]
+	D -> C [label=a]
+	node [shape=circle]
+	D -> B [label=b]
+}
