@@ -123,9 +123,26 @@ def graph_afn(afn):
     graph = graphviz.Digraph('Thompson Construction', filename='AFN', format= 'png')
     graph.attr(rankdir='LR', shape= 'circle')
 
-    start_state = afn[0][0][0]
-    end_state = afn[0][-1][1]
+    values = []
+    for val in afn[0]:
+        for vals in val:
+           if isinstance(vals, int) and vals not in values:
+                values.append(vals)
 
+    for valor in values:
+        contador = 0
+        contador1 = 0 
+        for tupla in afn[0]:
+            if tupla[0] == valor:
+                contador += 1
+            if tupla[1] == valor:
+                contador1 += 1
+        if contador1 == 0:
+            start_state = valor
+            print(start_state)
+
+    end_state = max(values)
+        
     for inicio,fin,label in afn[0]:
         if inicio == start_state:
             graph.node(str(start_state), style= 'filled', fillcolor = '#87CEEB', shape= 'circle', rank = 'same')
@@ -155,11 +172,11 @@ def thompson(subtrees_list):
         if i[0] == 'Concatenacion':
             G3 = stack2.pop()
             G4 = stack2.pop()
-            stack2.append(concatenate(G3,G4))
+            stack2.append(concatenate(G4,G3))
         if i[0] == 'Union':
             G5 = stack2.pop()
             G6 = stack2.pop()
-            stack2.append(union(G5,G6))
+            stack2.append(union(G6,G5))
 
     graph_afn(afn)
     print(afn)

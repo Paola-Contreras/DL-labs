@@ -14,7 +14,7 @@ from DirectAFD import *
 from Minimization import *
 
 # ingreso de expresion y conversion
-expresion_original = "(b|b)*abb(a|b)*"
+expresion_original = "a(a?b*|c+)b|baa"
 expresion_compuesta = fix_expression(expresion_original)
 check = validate(expresion_compuesta)
 
@@ -29,14 +29,11 @@ subtrees_list = tree.postorder_traversal()
 print('\n --- THOMPSHON --- ')
 AFN = thompson(subtrees_list)
 
-print ('\n --- AFD SUBCONJUNTOS --- ')
-AFD, Final_states = convertToAFD(AFN)
+# print ('\n --- AFD SUBCONJUNTOS --- ')
+# AFD, Final_states = convertToAFD(AFN)
 
-print('\n --- AFD DIRECTO --- ')
-AFD_D = direct(expresion_original)
+# print('\n --- AFD DIRECTO --- ')
+# AFD_D = direct(expresion_original)
 
-print('\n --- Minimization --- ')
-MIN = main_minimization(AFD, Final_states)
-
-#(b|b)*abb(a|b)*
-#b*ab?
+# print('\n --- Minimization --- ')
+# MIN = main_minimization(AFD, Final_states)

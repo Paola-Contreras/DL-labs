@@ -1,5 +1,10 @@
-import graphviz
+'''
+Universidad del Valle de Guatemala
+Diseño de lenguajes de programación 
+Gabriela Poala Contreras Guerra
+'''
 
+import graphviz
 
 def makeDic(transiciones):
     afd = {}
@@ -63,8 +68,7 @@ def graph_min(afd,end,start):
     graph = graphviz.Digraph('AFD Minimization', filename='Minimization', format= 'png')
     graph.attr(rankdir='LR')
 
-    start_state = start
-    print(start,'aa')
+    start_state = 'A'
     end_state = end
 
     for inicio,fin,label in afd:

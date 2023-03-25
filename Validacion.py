@@ -45,7 +45,7 @@ def validate (expresion):
             if ((i < len(expresion) - 1 and expresion[i+1] in '.|*+') or (i > 0 and expresion[i-1] == '.|') or (i == 0 or i == len(expresion)-1)):
                 raise ValueError ('El operador cuenta con un elemento invalido antes o despues del operador .')
         elif char == '|':
-            if ((i < len(expresion) - 1 and expresion[i+1] in '.|*+') or (i > 0 and expresion[i-1] == '.|') or (i == 0 or i == len(expresion)-1)):
+            if ((i < len(expresion) - 1 and expresion[i+1] in '.|*+)') or (i > 0 and expresion[i-1] == '.|') or (i == 0 or i == len(expresion)-1)):
                 raise ValueError ('El operador cuenta con un elemento invalido antes o despues del operador |')
         elif char == '(':
             if (i < len(expresion) - 1 and expresion[i+1] == '.|*+') or (i > 0 and expresion[i-1] == '.|'):
