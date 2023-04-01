@@ -1,0 +1,131 @@
+
+#Function to convert the AFN to AFD
+def convertToAFD(afn):
+    afd =[]
+
+    temp1 =[] 
+    states =[] 
+    subset = []
+    transition = []
+
+    while len(temp1) != 0:
+
+        temp_state = temp1.pop()
+
+        #Cycle to get each value of the alphabet
+         for i in afn[2]:
+             #Cehck if the state is not the start state 
+             if temp_state != 'Q1':
+                 n_states = temp_state
+             #If we get the start state  we convert these to a list, to keep track of the new transitions 
+             else: 
+                 n_states = [temp_state]
+            
+            #Calculate closures 
+        closure = eClosures(n_states)
+    
+            #Cycle to get each transitions of AFN
+            for j in afn:
+                #Values of the list
+                first = j[0]
+                second = j[1]
+                third = j[2]
+                #Cycle to get each value of the closure list 
+                for k in closure :
+                    #Condditional that checks the state and the value of move
+                    if first == k and second == i:
+                        #If the value is not ε these is append the state to n_states
+                        if third not in n_states:
+                            n_states.append(third)
+           
+            subset = eClosures(n_states)
+
+            if len(subset) != 0:
+                # Conditional that checks if the set is already on states 
+                if subset not in states:
+                    if subset not in temp1:
+                        # Saves the set on the states list and use is as a new state by appending it on temp
+                        states.append(subset)
+                        temp1.append(subset)
+
+                #Conditional that keeps track of every transition acording to the alphabet 
+                # if temp_state != :
+                #     transition.append((temp_state, i, subset))
+                # else:
+                transition.append((temp_state, i, subset))
+    
+    #Generate AFD 
+    afd = transition
+
+    return  afd 
+
+
+
+
+    def eclosure(automata, estado):
+    '''Retorna el conjunto de estados accesibles desde estado usando transiciones epsilon'''
+    visitados = set()  # conjunto para almacenar los estados visitados
+    por_visitar = {estado}  # conjunto para almacenar los estados que faltan por visitar
+    while por_visitar:
+        actual = por_visitar.pop()
+        visitados.add(actual)
+        for (e1, e2, simbolo) in automata:
+            if e1 == actual and simbolo == 'ε':
+                if e2 not in visitados:
+                    por_visitar.add(e2)
+    return visitados
+
+def e_closure1(automata, estado):
+    # Inicializar el conjunto closure con el estado de entrada
+    closure = {estado}
+    # Bucle para buscar estados alcanzables mediante transiciones épsilon
+    while True:
+        nuevos_estados = set()
+        
+        for (inicio, fin, simbolo) in automata:
+            if inicio in closure and simbolo == 'ε':
+                nuevos_estados.add(fin)
+        
+        # Si no hay nuevos estados, hemos terminado
+        if not nuevos_estados:
+            break
+        
+        # Agregar los nuevos estados a closure
+        closure |= nuevos_estados
+    
+    # Devolver el conjunto resultado
+    return closure
+
+
+
+
+
+    #Get transitions 
+    initial_closure = e_Closures(afn_transitions,start_state)
+    states_afd.append(initial_closure)
+    unvisited_state.append(initial_closure)
+    
+    print(initial_closure)
+
+    while len(unvisited_state) !=0:
+
+        actual_state = unvisited_state.pop()
+        for symbol in alphabet:
+            reachable = []
+            for state in actual_state:
+                
+                for (first, end, symbols) in afn_transitions:
+                    if first == state and symbols == symbol:
+                        
+                        reachable.append(end)
+                        
+            for state in reachable.copy():
+                e_closure=list(e_Closures(afn_transitions, state))
+                if e_closure not in reachable:
+                    reachable.extend(e_closure)
+                
+
+            if reachable and reachable not in states_afd:
+                states_afd.append(reachable)
+                unvisited_state.append(reachable)
+                afd_transitions.append((actual_state, reachable,symbol))
