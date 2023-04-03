@@ -28,7 +28,7 @@ def validate (expresion):
 
     # VALIDACION DE EXPRESIONES
     # Lista de los caracteres y operadores que se aceptan en la expresion  
-    caracteres = 'abcdefghijklmnñopqrstuvwxyz0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZε#'
+    caracteres = 'abcdefghijklmnñopqrstuvwxyz0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZε#↵'
     operadores = '*|+().?'
     # Ciclo for recorrer cada caracter de la expresion
     for caracter in expresion:
