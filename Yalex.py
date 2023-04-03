@@ -1,4 +1,10 @@
-doc = 'ArchivosYALex/slr-1.yal'
+'''
+Universidad del Valle de Guatemala
+Diseño de lenguajes de programación 
+Gabriela Poala Contreras Guerra
+'''
+
+doc = 'ArchivosYALex/slr-4.yal'
 value = []
 dic_prod = {}
 dic_rules = {}
@@ -114,81 +120,127 @@ def handle_data(contenido):
         
     return dic_prod, dic_rules
 
+def add_or (prod):
+    expresion = ''
+    caracteres = ''
+
+    for k, v in prod.items():
+        exp2 = ''
+        if '[' in v and ']' in v:
+            if k == 'delim':
+                if 'ε' in v:
+                    expresion = "|".join(v)
+                    for j in expresion:
+                        if j != '\\' and j != '|':
+                            caracteres += j
+
+                    for i, char in enumerate(expresion):
+                        if char == '[' or char == ']':
+                            continue
+                        if char in f"{v}":
+                            exp2 += char
+                        elif char == '|' and expresion[i+1] in caracteres:
+                            continue
+                        else:
+                            exp2 += char
+                    dic_prod[k] = f'({exp2})'
+
+                elif '\\' in v and 'ε' not in v:
+                    expresion = "|".join(v)
+                    for j in expresion:
+                        if j != '\\' and j != '|':
+                            caracteres += j
+
+                    for i, char in enumerate(expresion):
+                        if char == '[' or char == ']':
+                            continue
+                        if char in f"{v}":
+                            exp2 += char
+                        elif char == '|' and expresion[i+1] in caracteres:
+                            continue
+                        else:
+                            exp2 += char
+                            exp2 = exp2[1:]
+
+                    dic_prod[k] = f'({exp2})'
+
+            elif k == 'letter':    
+                for i, char in enumerate(v):
+                    if char == '-':
+                        start = ord(v[i-1])
+                        end = ord(v[i+1])
+
+                        for letter in range(start,end+1):
+                            if letter == start:
+                                exp2 += f'{chr(letter)}'
+                            else:
+                                exp2 += f'|{chr(letter)}'
+                        new_string = ''
+
+                        for i in range(len(exp2)):
+                            if exp2[i] != '|' and i != len(exp2):
+                                new_string += exp2[i] + '|'
+                       
+                        if new_string[-1] == '|':
+                            new_string = new_string[:-1]
+                        exp2 = new_string                    
+
+                dic_prod[k] = f'({exp2})'
+        
+            elif k == 'digit':
+                for i, char in enumerate(v):
+                        if char == '-':
+                            start =int(v[i-1])
+                            end = int(v[i+1])
+                        
+                            for num in range(start,end+1):
+                                if num == start:
+                                    exp2 += f'{num}'
+                                else:
+                                    exp2 += f'|{num}'
+                dic_prod[k] = f'({exp2})'
+        else:
+            pass
+    return dic_prod
+
+def generate_expresion(prod1):
+
+    updated_proddictionary = {}
+    get_changed_values = {}
+
+    #Ciclo para cambiar los valores que tambien se encuentran como llaves 
+    for key, value in prod1.items():
+        # Reemplazar la key en el valor con su correspondiente valor
+        for k in reversed(list(prod1.keys())):
+            v = prod1[k]
+            value = value.replace(k, v)
+
+        updated_proddictionary[key] = value
+
+    #Ciclo para ver que valores han cambiado en el diccionario actualizado vs el diccionario original
+    for key in prod1.keys():
+        if key in updated_proddictionary.keys():
+            if prod1[key] != updated_proddictionary[key]:
+                get_changed_values[key] = (updated_proddictionary[key])
+
+    #Generar expresion fianl 
+    expresion_key = ''
+    expresion_final =''
+    for k,v in get_changed_values.items():
+        expresion_key += f'|{k}'
+        expresion_final += f'|{v}'
+
+    expresion_key = expresion_key[1:]
+    expresion_final = expresion_final[1:]
+
+
+    print(expresion_key,'\n')
+    print(expresion_final)
+
+    return expresion_key , expresion_final
+
 
 contenido =openFile(doc) 
-prod , rule = handle_data(contenido)
-
-
-expresion = ''
-caracteres = ''
-
-for k, v in prod.items():
-    exp2 = ''
-    if '[' in v and ']' in v:
-        if k == 'delim':
-            if 'ε' in v:
-                expresion = "|".join(v)
-                for j in expresion:
-                    if j != '\\' and j != '|':
-                        caracteres += j
-
-                for i, char in enumerate(expresion):
-                    if char == '[' or char == ']':
-                        continue
-                    if char in f"{v}":
-                        exp2 += char
-                    elif char == '|' and expresion[i+1] in caracteres:
-                        continue
-                    else:
-                        exp2 += char
-                dic_prod[k] = exp2
-
-            elif '\\' in v and 'ε' not in v:
-                expresion = "|".join(v)
-                for j in expresion:
-                    if j != '\\' and j != '|':
-                        caracteres += j
-
-                for i, char in enumerate(expresion):
-                    if char == '[' or char == ']':
-                        continue
-                    if char in f"{v}":
-                        exp2 += char
-                    elif char == '|' and expresion[i+1] in caracteres:
-                        continue
-                    else:
-                        exp2 += char
-                        exp2 = exp2[1:]
-                dic_prod[k] = exp2
-        elif k == 'letter':    
-            for i, char in enumerate(v):
-                if char == '-':
-                    start = ord(v[i-1])
-                    end = ord(v[i+1])
-
-                    for letter in range(start,end+1):
-                        if letter == start:
-                            exp2 += f'{chr(letter)}'
-                        else:
-                            exp2 += f'|{chr(letter)}'
-
-            dic_prod[k] = exp2
-    
-        elif k == 'digit':
-            for i, char in enumerate(v):
-                    if char == '-':
-                        start =int(v[i-1])
-                        end = int(v[i+1])
-                    
-                        for num in range(start,end+1):
-                            if num == start:
-                                exp2 += f'{num}'
-                            else:
-                                exp2 += f'|{num}'
-            dic_prod[k] = exp2
-    
-    else:
-        pass
-
-print(dic_prod)
-            
+prod , rule = handle_data(contenido) 
+prod1 = add_or(prod)
+expresion = generate_expresion(prod1)
