@@ -39,6 +39,24 @@ class ExpressionTree:
         result.append((self.name, self.value))
 
         return result
+    
+        # Metodo para generar la representación DOT del árbol
+    def to_dot(self):
+        dot = 'digraph ExpressionTree {\n'
+        dot += self._to_dot()
+        dot += '}\n'
+        return dot
+    
+    def _to_dot(self):
+        dot = ''
+        if self.left:
+            dot += f'"{id(self)}" -> "{id(self.left)}"\n'
+            dot += self.left._to_dot()
+        if self.right:
+            dot += f'"{id(self)}" -> "{id(self.right)}"\n'
+            dot += self.right._to_dot()
+        dot += f'"{id(self)}" [label="{self.name}"]\n'
+        return dot
         
 def make_tree(postfix):
     operadores = {"*":"Kleene",".":"Concatenacion","|":"Union","+":"Kleen Positiva","?":"Opcional"}
