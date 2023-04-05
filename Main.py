@@ -7,16 +7,15 @@ Gabriela Poala Contreras Guerra
 from Arbol import * 
 from Validacion import*
 from Postfix import *
+from Yalex import *
 
 # ingreso de expresion y conversion
-expresion_original = "(b|b)*abb(a|b)*"
-expresion_compuesta = fix_expression(expresion_original)
-check = validate(expresion_compuesta)
-
-if check == 0:
-    expresion = convert_postfix(expresion_compuesta)
-    print(expresion,'post')
+doc = 'ArchivosYALex/slr-2.yal'
+read_doc = mainYalex(doc)
+expresion_compuesta = fix_expression(read_doc)
+posfix = convert_postfix(expresion_compuesta)
 
 # Hacer arbol y subarboles
-tree = make_tree(expresion)
+tree = make_tree(posfix)
 subtrees_list = tree.postorder_traversal()
+print(subtrees_list)

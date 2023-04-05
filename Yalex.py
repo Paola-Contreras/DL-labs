@@ -3,9 +3,7 @@ Universidad del Valle de Guatemala
 Diseño de lenguajes de programación 
 Gabriela Poala Contreras Guerra
 '''
-from Postfix import *
 
-doc = 'ArchivosYALex/slr-4.yal'
 value = []
 dic_prod = {}
 dic_rules = {}
@@ -14,7 +12,7 @@ def openFile (doc):
     with open(doc, 'r') as archivo:
         print("-> Reading file......")
         content = archivo.read() 
-        print(f"-> File read '\033[1m' {doc} '\033[0m'\n")
+        print(f"-> File read '\033[1m {doc} \033[0m'\n")
         #print(content)
     return content
 
@@ -33,8 +31,6 @@ def convert_prod_to_dic(prod):
                     string1 = string1[:-1]
                 key = string1
                 string1 = "" 
-            
-        
 
         #Se genera diccionario sin vacios 
         if string1:
@@ -122,7 +118,7 @@ def handle_data(contenido):
     convert_prod_to_dic(prod)
     convert_rules_to_dic(rules)
         
-    return dic_prod, dic_rules , prod
+    return dic_prod, dic_rules
 
 def add_or (prod):
     expresion = ''
@@ -164,8 +160,8 @@ def add_or (prod):
                             continue
                         else:
                             exp2 += char
-                            exp2 = exp2[1:]
 
+                    exp2 = exp2[1:]
                     dic_prod[k] = f'({exp2})?'
 
             elif k == 'letter':    
@@ -231,7 +227,7 @@ def generate_expresion(prod1):
             if prod1[key] != updated_proddictionary[key]:
                 get_changed_values[key] = (updated_proddictionary[key])
 
-    for k,v in prod.items():
+    for k,v in prod1.items():
         for j in v:
             if j == '[':
                 dentro_corchetes = True
@@ -259,18 +255,19 @@ def generate_expresion(prod1):
 
     expresion_final = expresion_final.replace(data_in, string)
 
-
-    print(expresion_key,'\n')
-    print(expresion_final)
+    print("\033[1m Expresion Resumida \033[0m")
+    print('-> ', expresion_key,'\n')
+    
+    print("\033[1m Expresion Extendida \033[0m")
+    print('-> ', expresion_final)
 
     return expresion_final
 
+def mainYalex(doc):
+    contenido =openFile(doc) 
+    prod , rule  = handle_data(contenido) 
+    prod1 = add_or(prod)
+    maked_expresion = generate_expresion(prod1)
 
-contenido =openFile(doc) 
-prod , rule ,lista = handle_data(contenido) 
-prod1 = add_or(prod)
-expresion = generate_expresion(prod1)
+    return maked_expresion
 
-dd = fix_expression(expresion)
-#print(prod)
-print('\n',dd)

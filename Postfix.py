@@ -9,6 +9,9 @@ Esta funcion es utilizada para convertir una expresion regular infix en una expr
 posfix, es importante destacar que para esta se utilizo el algoritmo de Shunting Yard
 '''
 def convert_postfix(expresion):
+    dentro_de_comillas = False
+    es_un_slash =  False
+    expresion3 = ''
     # Diccionario con los operadores a utilizar y su precedencia 
     operadores_orden ={'*':2,'+':2,'?':2,'.':1,'|':0}
     
@@ -40,7 +43,26 @@ def convert_postfix(expresion):
         
         # Parte de la condicion que aprendea el valor de i si este no es un operador 
         else:
-            postfix.append(i)
+            if i =='"' and not dentro_de_comillas:
+                dentro_de_comillas = True
+            elif i == '"' and dentro_de_comillas:
+                dentro_de_comillas = False
+                postfix.append(expresion3)
+                expresion3 = ''
+            elif dentro_de_comillas:
+                expresion3 += i
+            elif dentro_de_comillas == True:
+                pass
+            elif i == '\\' and not es_un_slash:
+                es_un_slash = True
+                expresion3 += i
+            elif es_un_slash:
+                expresion3 += i
+                postfix.append(expresion3)
+                expresion3 = ''
+                es_un_slash = False
+            else:
+                postfix.append(i)
 
     # Ciclo que apendea los valores restantes del stack de operadores a postfix siempre y cuando este no sea null 
     while stack_operadores:
@@ -54,14 +76,32 @@ los operadores necesarios para seguidamente poder convertirlo a posfix
 '''
 
 def fix_expression(expresion):
+    dentro_de_comillas = False
     #Coloca un . sobre cada caracter de la cadena 
     expresion = ".".join(expresion)
     #Variable que sera utilizada para almacenar la nueva expresion 
     expresion2 =''
+    expresion3 =''
+
     #Ciclo que enumera cada caracter de la expresion original 
     for i, char in enumerate(expresion):
+        if char == '"' and not dentro_de_comillas:
+            dentro_de_comillas = True
+            expresion3 += char
+        #Condicional para detectar el final de una cadena entre comillas
+        elif char == '"' and dentro_de_comillas:
+            expresion3 += char
+            dentro_de_comillas = False
+            expresion2 += expresion3
+            expresion3 = ''
+        #Condicional para omitir el punto dentro de una cadena entre comillas
+        elif dentro_de_comillas and char != '.':
+            expresion3 += char
+
+        elif dentro_de_comillas == True:
+            pass
         #Condicional que agrega a la expresion 2 los operadores
-        if char in '*|+()?':
+        elif char in '*|+()?':
             expresion2 += char
         # Condicional que si el . esta despues de uno de los caracteres 
         # espesifico omite el punto en la nueva expresion 
@@ -69,10 +109,11 @@ def fix_expression(expresion):
             continue
         # Condicional que si el . esta antes de uno de los caracteres 
         # espesifico omite el punto en la nueva expresion 
-        elif char == '.' and expresion[i-1] in '(|':
+        elif char == '.' and expresion[i-1] in '(|\\':
             continue
         # Si el caracter no es un . despues o antes de un operador se añade a la nueva expresion 
         else:
             expresion2 += char
 
+    print(expresion3)
     return expresion2
