@@ -3,6 +3,7 @@ Universidad del Valle de Guatemala
 Diseño de lenguajes de programación 
 Gabriela Poala Contreras Guerra
 '''
+from Postfix import *
 
 doc = 'ArchivosYALex/slr-4.yal'
 value = []
@@ -98,7 +99,10 @@ def handle_data(contenido):
             if data == "(" and contenido[i+1] == "*":
                 is_a_comment = True
             elif data != "\n":
+                if data == '.':
+                    data = f'"{ord(data)}"'
                 string += data
+                
             elif string:
                 value.append(string)
                 string = ""
@@ -118,7 +122,7 @@ def handle_data(contenido):
     convert_prod_to_dic(prod)
     convert_rules_to_dic(rules)
         
-    return dic_prod, dic_rules
+    return dic_prod, dic_rules , prod
 
 def add_or (prod):
     expresion = ''
@@ -143,7 +147,7 @@ def add_or (prod):
                             continue
                         else:
                             exp2 += char
-                    dic_prod[k] = f'({exp2})'
+                    dic_prod[k] = f'({exp2})?'
 
                 elif '\\' in v and 'ε' not in v:
                     expresion = "|".join(v)
@@ -162,7 +166,7 @@ def add_or (prod):
                             exp2 += char
                             exp2 = exp2[1:]
 
-                    dic_prod[k] = f'({exp2})'
+                    dic_prod[k] = f'({exp2})?'
 
             elif k == 'letter':    
                 for i, char in enumerate(v):
@@ -185,7 +189,7 @@ def add_or (prod):
                             new_string = new_string[:-1]
                         exp2 = new_string                    
 
-                dic_prod[k] = f'({exp2})'
+                dic_prod[k] = f'({exp2})?'
         
             elif k == 'digit':
                 for i, char in enumerate(v):
@@ -198,7 +202,7 @@ def add_or (prod):
                                     exp2 += f'{num}'
                                 else:
                                     exp2 += f'|{num}'
-                dic_prod[k] = f'({exp2})'
+                dic_prod[k] = f'({exp2})?'
         else:
             pass
     return dic_prod
@@ -207,6 +211,10 @@ def generate_expresion(prod1):
 
     updated_proddictionary = {}
     get_changed_values = {}
+
+    string = ''
+    data_in =''
+    dentro_corchetes = False
 
     #Ciclo para cambiar los valores que tambien se encuentran como llaves 
     for key, value in prod1.items():
@@ -223,6 +231,22 @@ def generate_expresion(prod1):
             if prod1[key] != updated_proddictionary[key]:
                 get_changed_values[key] = (updated_proddictionary[key])
 
+    for k,v in prod.items():
+        for j in v:
+            if j == '[':
+                dentro_corchetes = True
+                data_in += j
+            elif j == ']':
+                data_in += j
+                dentro_corchetes = False
+            elif dentro_corchetes:
+                string += f'|"{ord(j)}"'
+                data_in += j
+
+    string = string[1:]
+    if string:
+        string = f'({string})?'
+
     #Generar expresion fianl 
     expresion_key = ''
     expresion_final =''
@@ -233,14 +257,20 @@ def generate_expresion(prod1):
     expresion_key = expresion_key[1:]
     expresion_final = expresion_final[1:]
 
+    expresion_final = expresion_final.replace(data_in, string)
+
 
     print(expresion_key,'\n')
     print(expresion_final)
 
-    return expresion_key , expresion_final
+    return expresion_final
 
 
 contenido =openFile(doc) 
-prod , rule = handle_data(contenido) 
+prod , rule ,lista = handle_data(contenido) 
 prod1 = add_or(prod)
 expresion = generate_expresion(prod1)
+
+dd = fix_expression(expresion)
+#print(prod)
+print('\n',dd)
