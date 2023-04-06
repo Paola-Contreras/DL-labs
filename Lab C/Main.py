@@ -9,8 +9,9 @@ from Validacion import*
 from Postfix import *
 from Yalex import *
 import graphviz
+
 # ingreso de expresion y conversion
-doc = 'ArchivosYALex/slr-2.yal'
+doc = 'ArchivosYALex/slr-1.yal'
 read_doc = mainYalex(doc)
 expresion_compuesta = fix_expression(read_doc)
 posfix = convert_postfix(expresion_compuesta)
@@ -20,10 +21,8 @@ tree = make_tree(posfix)
 subtrees_list = tree.postorder_traversal()
 print(subtrees_list)
 
-# Obtener la representación DOT del árbol
+# Obtener la representación y crear una imagen 
 dot = tree.to_dot()
-
-# Crear el archivo de imagen usando Graphviz
 graph = graphviz.Source(dot)
 graph.render('expresion_regular',format='png')
-graph.view()
+

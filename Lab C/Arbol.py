@@ -55,7 +55,7 @@ class ExpressionTree:
         if self.right:
             dot += f'"{id(self)}" -> "{id(self.right)}"\n'
             dot += self.right._to_dot()
-        dot += f'"{id(self)}" [label="{self.name}"]\n'
+        dot += f'"{id(self)}" [label="{self.value}"]\n'
         return dot
         
 def make_tree(postfix):
