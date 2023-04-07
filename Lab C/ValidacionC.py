@@ -125,8 +125,3 @@ def validate_doc(contenido):
         raise ValueError(message)
     
     return 0
-
-def validate_document(doc):
-    content = openFile(doc)
-    validate_doc(content)
-    print(validate_doc)
