@@ -18,8 +18,7 @@ posfix = convert_postfix(expresion_compuesta)
 
 # Hacer arbol y subarboles
 tree = make_tree(posfix)
-subtrees_list = tree.postorder_traversal()
-print(subtrees_list)
+
 
 # Obtener la representación y crear una imagen 
 dot = tree.to_dot()
