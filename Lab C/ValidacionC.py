@@ -4,6 +4,19 @@ Diseño de lenguajes de programación
 Gabriela Poala Contreras Guerra
 '''
 
+import traceback
+
+
+doc = 'ArchivosYALex/slr-4.yal'
+def openFile (doc):
+    with open(doc, 'r') as archivo:
+        print("-> Reading file......")
+        content = archivo.read() 
+        print(f"-> File read '\033[1m {doc} \033[0m'\n")
+        #print(content)
+    return content
+
+
 '''
 Esta función es utilizada para corroborar que la exprsión ingresada no cuente con errores
 ya sea con balanceo de parentesis o con elementos los cuales no son aceptados
@@ -62,3 +75,58 @@ def validate (expresion):
         
     return 0
 
+
+def count(contenido,char,char2):
+    num = 0
+    num = contenido.count(char) + contenido.count(char2)
+    return num 
+
+def validate_doc(contenido):
+    parentesis = count(contenido,'(',')')
+    asterisco = count(contenido,'*','*')
+    coment = count(contenido,'(*','*)')
+    llaves = count(contenido,'{','}')
+    brackets = count(contenido,'[',']')
+    comillas = count(contenido,"'","'")
+
+    if parentesis % 2 == 1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Hace falta un patentesis de apertura o cierre, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    elif coment %2 ==1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Hace falta un *, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    elif asterisco == 0 and coment % 2 == 1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Hace falta un parentesis en un comentario, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    elif parentesis == 0 and coment % 2 == 1 :
+        line = traceback.extract_stack()[-1][1]
+        message = f'Hace falta un asterisco en un comentario, error ocurrio en la linea {line}'
+        raise ValueError(message)
+
+    elif llaves %2 ==1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Error de llaves de apertura o cierre, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    elif brackets %2 ==1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Error de brackets de apertura o cierre, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    elif comillas %2 ==1:
+        line = traceback.extract_stack()[-1][1]
+        message = f'Error de comillas de apertura o cierre, error ocurrio en la linea {line}'
+        raise ValueError(message)
+    
+    return 0
+
+def validate_document(doc):
+    content = openFile(doc)
+    validate_doc(content)
+    print(validate_doc)
