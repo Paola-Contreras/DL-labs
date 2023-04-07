@@ -5,14 +5,17 @@ Gabriela Poala Contreras Guerra
 '''
 
 from Arbol import * 
-from Validacion import*
 from Postfix import *
 from Yalex import *
+from ValidacionC import *
 import graphviz
 
 # ingreso de expresion y conversion
-doc = 'ArchivosYALex/slr-1.yal'
-read_doc = mainYalex(doc)
+doc = 'ArchivosYALex/slr-4.yal'
+documento = openFile(doc)
+validation = validate_doc(documento)
+if validation == 0:
+    read_doc = mainYalex(doc)
 expresion_compuesta = fix_expression(read_doc)
 posfix = convert_postfix(expresion_compuesta)
 
