@@ -11,7 +11,7 @@ from ValidacionC import *
 import graphviz
 
 # ingreso de expresion y conversion
-doc = 'ArchivosYALex/slr-4.yal'
+doc = 'ArchivosYALex/slr-3.yal'
 documento = openFile(doc)
 validation = validate_doc(documento)
 if validation == 0:
@@ -26,5 +26,5 @@ tree = make_tree(posfix)
 # Obtener la representación y crear una imagen 
 dot = tree.to_dot()
 graph = graphviz.Source(dot)
-graph.render('expresion_regular',format='png')
+graph.render('expresion_regular_yalex3',format='png')
 

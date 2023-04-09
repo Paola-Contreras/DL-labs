@@ -198,6 +198,15 @@ def add_or (prod):
                                     exp2 += f'{num}'
                                 else:
                                     exp2 += f'|{num}'
+                        elif char == '"':
+                            start =int(v[2])
+                            end = int(v[-3])
+                            for num in range(start,end):
+                                if num == start:
+                                    exp2 += f'{num}'
+                                else:
+                                    exp2 += f'|{num}'
+                                    
                 dic_prod[k] = f'({exp2})?'
         else:
             pass
