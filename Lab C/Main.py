@@ -12,8 +12,8 @@ import graphviz
 
 # ingreso de expresion y conversion
 doc = 'ArchivosYALex/slr-3.yal'
-documento = openFile(doc)
-validation = validate_doc(documento)
+with open(doc, 'r') as archivo: content = archivo.read() 
+validation = validate_doc(content)
 if validation == 0:
     read_doc = mainYalex(doc)
 expresion_compuesta = fix_expression(read_doc)
@@ -21,7 +21,6 @@ posfix = convert_postfix(expresion_compuesta)
 
 # Hacer arbol y subarboles
 tree = make_tree(posfix)
-
 
 # Obtener la representación y crear una imagen 
 dot = tree.to_dot()

@@ -230,13 +230,8 @@ def generate_expresion(prod1):
 
         updated_proddictionary[key] = value
 
-    #Ciclo para ver que valores han cambiado en el diccionario actualizado vs el diccionario original
-    for key in prod1.keys():
-        if key in updated_proddictionary.keys():
-            if prod1[key] != updated_proddictionary[key]:
-                get_changed_values[key] = (updated_proddictionary[key])
-
-    for k,v in prod1.items():
+    #cambio usando corchetes 
+    for k,v in updated_proddictionary.items():
         for j in v:
             if j == '[':
                 dentro_corchetes = True
@@ -252,9 +247,17 @@ def generate_expresion(prod1):
     if string:
         string = f'({string})?'
 
+
     #Generar expresion fianl 
     expresion_key = ''
     expresion_final =''
+
+    for key in updated_proddictionary.keys():
+        if key in dic_rules.keys():
+            value = updated_proddictionary[k]
+            get_changed_values[key]=value
+
+
     for k,v in get_changed_values.items():
         expresion_key += f'|{k}'
         expresion_final += f'|{v}'
@@ -280,3 +283,5 @@ def mainYalex(doc):
 
     return maked_expresion
 
+# doc = 'ArchivosYALex/slr-3.yal'
+# mainYalex(doc)
