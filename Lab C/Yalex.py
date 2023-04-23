@@ -13,7 +13,7 @@ def openFile (doc):
         print("-> Reading file......")
         content = archivo.read() 
         print(f"-> File read '\033[1m {doc} \033[0m'\n")
-        #print(content)
+        content = content.replace('\t', '')
     return content
 
 def convert_prod_to_dic(prod):
@@ -29,21 +29,26 @@ def convert_prod_to_dic(prod):
             if char == "=":
                 while string1 and string1[-1] == ' ':
                     string1 = string1[:-1]
+                    
                 key = string1
                 string1 = "" 
 
         #Se genera diccionario sin vacios 
+       
         if string1:
             while string1 and string1[0] == ' ':
                 string1 = string1[1:]
-            change = ''
-            if ' ' in string1: 
-                for letter in string1:
-                    if letter == ' ':
-                        change += 'ε'
-                    else:
-                        change += letter
-                string1 = change
+            if '[' in string1:
+                change = ''
+                if ' ' in string1: 
+                    for letter in string1:
+                        if letter == ' ':
+                            change += 'ε'
+                        else:
+                            change += letter
+                    string1 = change
+            else:
+                string1 = string1.replace(" ", "")
             dic_prod[key] = string1
     
     return dic_prod
@@ -64,7 +69,6 @@ def convert_rules_to_dic(rules):
             if char == "}":
                 vall = string2
                 output =""
-
                 #Ciclo para ponerle espacios entre return y resto
                 for letter in vall:
                     output += letter
@@ -73,13 +77,15 @@ def convert_rules_to_dic(rules):
 
                 vall = output
                 string2 = ""
-        
+            
         if string2:
             # Agrega al diccionario los valores que no tienen return en el archivo y les asigna el return de su llave
             dic_rules[string2] = f"return {string2}"
+
         else:
             if key !="" and vall !="":
                 dic_rules[key] = vall
+
 
     return dic_rules
 
@@ -88,6 +94,9 @@ def handle_data(contenido):
     rules = []
     string = ""
     is_a_comment = False
+    is_in_llaves = False
+    temp_string = ""
+
     # Este se encarga de por cada dato del archivo almacenarlo en una lista omitiendo los comentarios
     for i in range(len(contenido)):
         data = contenido[i]
@@ -97,16 +106,32 @@ def handle_data(contenido):
             elif data != "\n":
                 if data == '.':
                     data = f'"{ord(data)}"'
-                string += data
+
+                if is_in_llaves:
+                    temp_string += data
+
+                else:   
+                    string += data
+
+                if data == '{':
+                    is_in_llaves = True
+                    temp_string = string
                 
+                elif data == '}':
+                    is_in_llaves = False
+                    if temp_string != "":
+                        string += temp_string
+                        temp_string = ""
+
             elif string:
-                value.append(string)
+                value.append(string.strip())
                 string = ""
+    
         elif data == ")" and contenido[i-1] == "*":
             is_a_comment = False
             if i < len(contenido) - 1:
                 i += 1
-
+    
     # En base a la lista general este ciclo genera una lista de producciones y otra de reglas 
     for val in value:
         if "let" in val:
@@ -123,6 +148,7 @@ def handle_data(contenido):
 def add_or (prod):
     expresion = ''
     caracteres = ''
+    found_quote = False
 
     for k, v in prod.items():
         exp2 = ''
@@ -192,21 +218,22 @@ def add_or (prod):
                         if char == '-':
                             start =int(v[i-1])
                             end = int(v[i+1])
-                        
                             for num in range(start,end+1):
                                 if num == start:
                                     exp2 += f'{num}'
                                 else:
                                     exp2 += f'|{num}'
                         elif char == '"':
-                            start =int(v[2])
-                            end = int(v[-3])
-                            for num in range(start,end):
-                                if num == start:
-                                    exp2 += f'{num}'
-                                else:
-                                    exp2 += f'|{num}'
-                                    
+                            if not found_quote:
+                                found_quote = True
+                                start =int(v[2])
+                                end = int(v[-3])
+                                for num in range(start,end+1):
+                                    if num == start:
+                                        exp2 += f'{num}'
+                                    else:
+                                        exp2 += f'|{num}'
+                
                 dic_prod[k] = f'({exp2})?'
         else:
             pass
@@ -254,9 +281,8 @@ def generate_expresion(prod1):
 
     for key in updated_proddictionary.keys():
         if key in dic_rules.keys():
-            value = updated_proddictionary[k]
+            value = updated_proddictionary[key]
             get_changed_values[key]=value
-
 
     for k,v in get_changed_values.items():
         expresion_key += f'|{k}'
@@ -283,5 +309,9 @@ def mainYalex(doc):
 
     return maked_expresion
 
-# doc = 'ArchivosYALex/slr-3.yal'
-# mainYalex(doc)
+doc = 'ArchivosYALex/slr-0.yal'
+mainYalex(doc)
+
+#print("\n",dic_prod)
+#print("\n", dic_rules)
+#document = openFile(doc)
