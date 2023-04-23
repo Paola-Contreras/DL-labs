@@ -396,5 +396,6 @@ class Direct:
     #         for k,v in self.getIdToken.items():
     #             if num == v:
     #                 ID.append(k)
-    #     #print(ID)
-    #     return ID
+    #     print(ID)
+    #     print(self.end_state[0])
+    # #     return ID

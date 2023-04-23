@@ -108,10 +108,6 @@ def handle_data(contenido):
             if data == "(" and contenido[i+1] == "*":
                 is_a_comment = True
             elif data != "\n":
-                if data == '+' and is_in_llaves is False:
-                    data = f'"&"'
-                elif data =='*':
-                    data = f'"^"'
                 if is_in_llaves:
                     temp_string += data
 
@@ -329,6 +325,12 @@ def generate_expresion(prod1):
             elif j == ']':
                 data_in += j
                 dentro_corchetes = False
+            elif j == '"' and dentro_corchetes is True:
+                pass
+            elif j == '+'and dentro_corchetes is True:
+                data_in += '&'
+            elif j == '*'and dentro_corchetes is True:
+                data_in += '^'   
             elif dentro_corchetes:
                 string += f'|"{j}"'
                 data_in += j

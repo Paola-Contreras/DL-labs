@@ -56,26 +56,10 @@ class AFD(Automata):
                         print(f"-> No se encontraron transiciones para '{simbolo}")
                         token.append({0})
                         break
-                elif simbolo == '+':
-                    simbolo ='&'
-                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
-                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
-                    else:
-                        print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
-                elif simbolo == '*':
-                    simbolo ='^'
-                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
-                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
-                    else:
-                        print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
                 else:
                     if simbolo in tuple(transiciones[tuple(estado_actual)]):
                         estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
-                    
+
                     else:
                         print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
                         print(f"-> No se encontraron transiciones para '{simbolo}")
@@ -90,16 +74,14 @@ class AFD(Automata):
                     print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
 
             estado_actual = self.start_state
-        
+
         # --- OBTENER TOKENS ---
         #print(token)
         token = [x for conjunto in token for x in conjunto]
-        
+
         for num in token:
             for k,v in self.getIdToken.items():
                 if num == v:
                     ID.append(k)
         print(ID)
-        #print(self.end_state[0])
         return ID
-    

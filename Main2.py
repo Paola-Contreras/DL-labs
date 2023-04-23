@@ -60,4 +60,3 @@ d=Direct(tree,treeLFs3,hash_dic)
 state,start,end,trans,alphabet,tokenhash,dichash= d.construct()
 
 make_automata(state,start,end,trans,alphabet,tokenhash,dichash)
-
