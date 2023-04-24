@@ -44,12 +44,12 @@ def make_tree(postfix):
     operadores = {"*":"Kleene",".":"Concatenacion","|":"Union","+":"Kleen Positiva","?":"Opcional"}
     stack = []
     for i in postfix:
-        if i == "|":
+        if i == ".":
             leaf = ExpressionTree(operadores[i],i)
             leaf.right = stack.pop()
             leaf.left = stack.pop()
             stack.append(leaf)
-        elif i == ".":
+        elif i == "|":
             leaf = ExpressionTree(operadores[i],i)
             leaf.right = stack.pop()
             leaf.left = stack.pop()

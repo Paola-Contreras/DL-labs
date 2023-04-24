@@ -1,0 +1,6 @@
+digraph "AFD Minimization" {
+	rankdir=LR
+	A [fillcolor="#87CEEB" rank=same shape=circle style=filled]
+	node [shape=circle]
+	A -> A [label="#"]
+}

@@ -13,7 +13,7 @@ def convert_postfix(expresion):
     es_un_slash =  False
     expresion3 = ''
     # Diccionario con los operadores a utilizar y su precedencia 
-    operadores_orden ={'*':2,'+':2,'?':2,'.':1,'|':0}
+    operadores_orden ={'*':2,'+':2,'?':2,'·':1,'|':0}
     
     # Listas que se utilizan para recrear un stack de operadores y al mismo tiempo la cadena postfix 
     stack_operadores = []
@@ -22,9 +22,9 @@ def convert_postfix(expresion):
     # Ciclo para recorrer cada elemento de la cadena ingresada 
     for i in expresion:
         # Condicional que se encarga del manejo de los parentesis dentro del stack de operadores  
-        if i == '(':
+        if i == '(' and dentro_de_comillas == False:
             stack_operadores.append(i) 
-        elif i == ')':
+        elif i == ')' and dentro_de_comillas == False:
             # Ciclo que se recorre hasta encontrar un parentesis cerrado y al mismo tiempo recorre la cadena de izquierda a derecha
             while stack_operadores[-1] != '(':
                 # Se añade al la lista de postfix cada elemento que se encuentre de por medio de los parentesis
@@ -78,7 +78,7 @@ los operadores necesarios para seguidamente poder convertirlo a posfix
 def fix_expression(expresion):
     dentro_de_comillas = False
     #Coloca un . sobre cada caracter de la cadena 
-    expresion = ".".join(expresion)
+    expresion = "·".join(expresion)
     #Variable que sera utilizada para almacenar la nueva expresion 
     expresion2 =''
     expresion3 =''
@@ -95,7 +95,7 @@ def fix_expression(expresion):
             expresion2 += expresion3
             expresion3 = ''
         #Condicional para omitir el punto dentro de una cadena entre comillas
-        elif dentro_de_comillas and char != '.':
+        elif dentro_de_comillas and char != '·':
             expresion3 += char
 
         elif dentro_de_comillas == True:
@@ -105,15 +105,15 @@ def fix_expression(expresion):
             expresion2 += char
         # Condicional que si el . esta despues de uno de los caracteres 
         # espesifico omite el punto en la nueva expresion 
-        elif char == '.' and expresion[i+1] in '*+|?)':
+        elif char == '·' and expresion[i+1] in '*+|?)':
             continue
         # Condicional que si el . esta antes de uno de los caracteres 
         # espesifico omite el punto en la nueva expresion 
-        elif char == '.' and expresion[i-1] in '(|\\':
+        elif char == '·' and expresion[i-1] in '(|\\':
             continue
         # Si el caracter no es un . despues o antes de un operador se añade a la nueva expresion 
         else:
             expresion2 += char
 
-    print(expresion3)
+    
     return expresion2

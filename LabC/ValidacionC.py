@@ -99,12 +99,12 @@ def validate_doc(contenido):
         message = f'Hace falta un *, error ocurrio en la linea {line}'
         raise ValueError(message)
     
-    elif asterisco == 0 and coment % 2 == 1:
+    elif asterisco == 0:
         line = traceback.extract_stack()[-1][1]
         message = f'Hace falta un parentesis en un comentario, error ocurrio en la linea {line}'
         raise ValueError(message)
     
-    elif parentesis == 0 and coment % 2 == 1 :
+    elif parentesis == 0:
         line = traceback.extract_stack()[-1][1]
         message = f'Hace falta un asterisco en un comentario, error ocurrio en la linea {line}'
         raise ValueError(message)

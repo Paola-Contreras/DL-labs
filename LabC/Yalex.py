@@ -7,6 +7,10 @@ Gabriela Poala Contreras Guerra
 value = []
 dic_prod = {}
 dic_rules = {}
+new_expresion ={}
+get_changed_values = {} 
+updated_proddictionary = {}
+
 
 def openFile (doc):
     with open(doc, 'r') as archivo:
@@ -43,7 +47,7 @@ def convert_prod_to_dic(prod):
                 if ' ' in string1: 
                     for letter in string1:
                         if letter == ' ':
-                            change += 'ε'
+                            change +='"" "'
                         else:
                             change += letter
                     string1 = change
@@ -59,12 +63,12 @@ def convert_rules_to_dic(rules):
         vall = ""
         string2 = ""
         for char in el:
-            if char != " " and char != "|"and char != "{" and char != "}" and char != "'":
+            if char != "|"and char != "{" and char != "}" and char != "'":
                 string2+= char
-                if string2 == "ruletokens=":
+                if string2 == "rule tokens =":
                     string2 = ""
             if char == "{":
-                key = string2
+                key = string2.strip()
                 string2 = ""
             if char == "}":
                 vall = string2
@@ -75,7 +79,7 @@ def convert_rules_to_dic(rules):
                     if output == "return":
                         output += " "
 
-                vall = output
+                vall = output.strip()
                 string2 = ""
             
         if string2:
@@ -104,8 +108,8 @@ def handle_data(contenido):
             if data == "(" and contenido[i+1] == "*":
                 is_a_comment = True
             elif data != "\n":
-                if data == '.':
-                    data = f'"{ord(data)}"'
+                if data == '.' and is_in_llaves is False:
+                    data = f'"{data}"'
 
                 if is_in_llaves:
                     temp_string += data
@@ -116,16 +120,21 @@ def handle_data(contenido):
                 if data == '{':
                     is_in_llaves = True
                     temp_string = string
-                
+
                 elif data == '}':
                     is_in_llaves = False
                     if temp_string != "":
                         string += temp_string
                         temp_string = ""
+                
+
 
             elif string:
-                value.append(string.strip())
-                string = ""
+                if is_in_llaves is True:
+                    pass
+                else:
+                    value.append(string.strip())
+                    string = ""
     
         elif data == ")" and contenido[i-1] == "*":
             is_a_comment = False
@@ -239,10 +248,63 @@ def add_or (prod):
             pass
     return dic_prod
 
-def generate_expresion(prod1):
+def generate_scanner(dic):
+    with open('Scanner.py', 'w') as archivo:
+        archivo.write(f'def scanner (rule):\n')
+        for k,v in dic.items():
+            if ':' in v:
+                new_parte1 = ""
+                archivo.write(f'\tif rule == {k!r}:\n')
+                indice = v.index(":")
+                parte1 = v[:indice+1]
+                parte2 = v[indice+1:]
 
-    updated_proddictionary = {}
-    get_changed_values = {}
+                # Separar segunda parte del codigo 
+                inicio = parte2.index(':')
+                sub2 = parte2[inicio+1:]
+                sub21 = parte2[:inicio+1]            
+                i = sub2.index(' ')
+                sub2_s = sub2[i+1:]
+                sub2_r = sub2[:i+1]
+                ultima_letra_mayuscula = None
+
+                for letra in reversed(sub21):
+                    if letra.isupper():
+                        ultima_letra_mayuscula = letra
+                        break
+
+                fin = sub21.index(ultima_letra_mayuscula)
+                sub2_1 = sub21[:fin+1]
+                sub2_2 = sub21[fin+1:]
+                sub2_1s = sub2_1[i+1:]
+                sub2_1r = sub2_1[:i+1]
+
+                # Manejo de la primera parte del codigo 
+                if '=' in parte1:
+                    inicio = parte1.index('=')+2
+                    fin= parte1.index(':')
+                    subcadena2 = parte1[inicio:fin]
+                    
+                    if subcadena2.isdigit():
+                        archivo.write(f'\t\t{parte1} {sub2_1r} {sub2_1s!r}\n')
+                    else:
+                        
+                        inicio = parte1.index('=')
+                        subcadena3 = parte1[:inicio]
+                        new_parte1 += f'{subcadena3}= {subcadena2!r}:'
+                        archivo.write(f'\t\t{new_parte1} {sub2_1r} {sub2_1s!r}\n')
+                        
+                archivo.write(f'\t\t{sub2_2} {sub2_r} {sub2_s!r}\n')
+                
+            else:
+                i = v.index(' ')
+                subcadena = v[i+1:]
+                subcadena1 = v[:i+1]
+                archivo.write(f'\tif rule == {k!r}: {subcadena1}{subcadena!r}\n')
+        archivo.write(f"\tif rule == 'error': return 'ERROR LEXICO'")
+
+def generate_expresion(prod1):
+    temp ={}
 
     string = ''
     data_in =''
@@ -267,37 +329,69 @@ def generate_expresion(prod1):
                 data_in += j
                 dentro_corchetes = False
             elif dentro_corchetes:
-                string += f'|"{ord(j)}"'
+                string += f'|"{j}"'
                 data_in += j
 
     string = string[1:]
     if string:
         string = f'({string})?'
 
+    exp = ''
+    key=''
+    for k,v in updated_proddictionary.items():
+        for j in v:
+            if '[' in v and ']' in v :
+                if j == '[':
+                    dentro_corchetes = True
+                    exp += string
+                elif j == ']':
+                    dentro_corchetes = False
+                    pass
+                elif dentro_corchetes:
+                    pass
+                else:
+                    exp += j
+                key = k
+        # print(key)
+        # print(exp)
+    updated_proddictionary[key]=exp
+                
 
     #Generar expresion fianl 
     expresion_key = ''
     expresion_final =''
-
+    
     for key in updated_proddictionary.keys():
         if key in dic_rules.keys():
             value = updated_proddictionary[key]
+            temp[key]=value
+            value += '#'
             get_changed_values[key]=value
 
-    for k,v in get_changed_values.items():
+    for k,v in get_changed_values.items(): 
+        new_expresion[k]=v
+
+    for k,v in dic_rules.items(): 
+        if not k.isalpha(): 
+            new_expresion[k]= f'"{k}"#'
+
+    for k,v in new_expresion.items():
         expresion_key += f'|{k}'
         expresion_final += f'|{v}'
 
+    #print(expresion_final)
+    # print(updated_proddictionary)
+    #print(get_changed_values,'hh')
+    # print(dic_prod)
+
     expresion_key = expresion_key[1:]
     expresion_final = expresion_final[1:]
-
-    expresion_final = expresion_final.replace(data_in, string)
-
+   
     print("\033[1m Expresion Resumida \033[0m")
     print('-> ', expresion_key,'\n')
     
     print("\033[1m Expresion Extendida \033[0m")
-    print('-> ', expresion_final)
+    print('-> ', expresion_final,'\n')
 
     return expresion_final
 
@@ -306,12 +400,6 @@ def mainYalex(doc):
     prod , rule  = handle_data(contenido) 
     prod1 = add_or(prod)
     maked_expresion = generate_expresion(prod1)
+    generate_scanner(rule)
 
     return maked_expresion
-
-doc = 'ArchivosYALex/slr-0.yal'
-mainYalex(doc)
-
-#print("\n",dic_prod)
-#print("\n", dic_rules)
-#document = openFile(doc)

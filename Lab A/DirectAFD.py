@@ -5,9 +5,9 @@ Gabriela Poala Contreras Guerra
 '''
 
 import graphviz
-from Arbol import * 
+from LabC import Arbol as ar
 from Validacion import*
-from Postfix import *
+from LabC import Postfix as p
 
 objects = []
 nodes_val =[]
@@ -223,16 +223,18 @@ def graph_afd(afd,end):
     graph.view()
 
 def direct (expresion):
-    newexpresion = expresion +'#'
-    expresion_compuesta = fix_expression(newexpresion)
+    newexpresion = expresion 
+    expresion_compuesta = p.fix_expression(newexpresion)
     print(expresion_compuesta)
     
-    check = validate(expresion_compuesta)
-    if check == 0:
-        expresion_o = convert_postfix(expresion_compuesta)
-        
+    posfix = p.convert_postfix(expresion_compuesta)
+    print(posfix)   
 
-    tree = make_tree(expresion_o)
+    tree = ar.ExpressionTree.maked_tree(posfix)
+    dot = tree.to_dot()
+    graph = graphviz.Source(dot)
+    graph.render('expresion_regular_yalex0',format='png')
+
     subtrees_list = tree.postorder_traversal()
     
     stack = []
