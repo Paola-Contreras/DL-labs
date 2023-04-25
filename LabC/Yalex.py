@@ -63,7 +63,7 @@ def convert_rules_to_dic(rules):
         vall = ""
         string2 = ""
         for char in el:
-            if char != "|"and char != "{" and char != "}" and char != "'":
+            if char != "|"and char != "{" and char != "}" and char != "'" and char != '"':
                 string2+= char
                 if string2 == "rule tokens =":
                     string2 = ""
@@ -81,7 +81,7 @@ def convert_rules_to_dic(rules):
 
                 vall = output.strip()
                 string2 = ""
-            
+
         if string2:
             # Agrega al diccionario los valores que no tienen return en el archivo y les asigna el return de su llave
             dic_rules[string2] = f"return {string2}"
@@ -108,9 +108,10 @@ def handle_data(contenido):
             if data == "(" and contenido[i+1] == "*":
                 is_a_comment = True
             elif data != "\n":
-                if data == '.' and is_in_llaves is False:
-                    data = f'"{data}"'
-
+                if data == '+' and is_in_llaves is False:
+                    data = f'"&"'
+                elif data =='*':
+                    data = f'"^"'
                 if is_in_llaves:
                     temp_string += data
 
@@ -151,7 +152,7 @@ def handle_data(contenido):
     #Vuelve la lista a un diccionario 
     convert_prod_to_dic(prod)
     convert_rules_to_dic(rules)
-        
+    #print(dic_rules)
     return dic_prod, dic_rules
 
 def add_or (prod):
@@ -380,7 +381,7 @@ def generate_expresion(prod1):
         expresion_final += f'|{v}'
 
     #print(expresion_final)
-    # print(updated_proddictionary)
+    #print(updated_proddictionary)
     #print(get_changed_values,'hh')
     # print(dic_prod)
 

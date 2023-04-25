@@ -56,6 +56,22 @@ class AFD(Automata):
                         print(f"-> No se encontraron transiciones para '{simbolo}")
                         token.append({0})
                         break
+                elif simbolo == '+':
+                    simbolo ='&'
+                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
+                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
+                    else:
+                        print(f"-> No se encontraron transiciones para '{simbolo}")
+                        token.append({0})
+                        break
+                elif simbolo == '*':
+                    simbolo ='^'
+                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
+                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
+                    else:
+                        print(f"-> No se encontraron transiciones para '{simbolo}")
+                        token.append({0})
+                        break
                 else:
                     if simbolo in tuple(transiciones[tuple(estado_actual)]):
                         estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])

@@ -55,7 +55,7 @@ dot = tree.to_dot()
 graph = graphviz.Source(dot)
 graph.render("tree",format='png')
 
-# Simulacion 
+# Make Direct 
 d=Direct(tree,treeLFs3,hash_dic)
 state,start,end,trans,alphabet,tokenhash,dichash= d.construct()
 
