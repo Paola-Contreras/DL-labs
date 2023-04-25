@@ -10,6 +10,8 @@ from Validacion import*
 from LabC import Postfix as p
 from LabC import Yalex as y
 from Direct import *
+from make import *
+
 
 doc = 'ArchivosYALex/slr-3.yal'
 read_doc = y.mainYalex(doc)
@@ -55,18 +57,7 @@ graph.render("tree",format='png')
 
 # Simulacion 
 d=Direct(tree,treeLFs3,hash_dic)
-obj = d.construct()
+state,start,end,trans,alphabet,tokenhash,dichash= d.construct()
 
-# Archivo con palabras a simular
-with open('test.txt', 'r') as archivo:
-    contenido = archivo.read()
+make_automata(state,start,end,trans,alphabet,tokenhash,dichash)
 
-Tokens = d.simulation(contenido)
-
-from Scanner import *
-
-with open('ReconizedToken.txt', 'w') as archivo:
-    archivo.write('--- TOKENS RECONOCIDOS ---\n')
-    for i in Tokens:
-        findToken=scanner(i)
-        archivo.write(f'{findToken}\n')

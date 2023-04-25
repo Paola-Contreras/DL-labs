@@ -1,6 +1,12 @@
+'''
+Universidad del Valle de Guatemala
+Diseño de lenguajes de programación 
+Gabriela Poala Contreras Guerra
+'''
+
 import graphviz
-from LabC import Yalex as y
-import inspect
+from Automata import *
+from AFD import *
 
 followpos_dict = {}
 
@@ -9,6 +15,7 @@ class Direct:
         self.tree = tree
         self.nodes = treeLF
         self.alfabeto = self.alphabet(tree)
+        self.states = None
         self.start_state = None
         self.end_state = None
         self.transitions = None
@@ -99,7 +106,7 @@ class Direct:
                         if type(followpos_dict[i]) is set and type(node.right.label["firstpos"]) is set:
                             followpos_dict[i] |= node.right.label["firstpos"]
                         else:
-                            print(i)
+                            #print(i)
                             followpos_dict[i].update({node.right.label["firstpos"]})
                     else:
                         followpos_dict[i] = node.right.label["firstpos"]
@@ -168,7 +175,7 @@ class Direct:
             graph.edge(str(inicio), str(fin), label= str(label))
 
         
-        graph.view()
+        #graph.view()
 
     def construct(self):
         follow_tables = []
@@ -303,102 +310,91 @@ class Direct:
             trans_dic[clave][letra] = valor
             
         #print(trans_dic)
-
+        self.states = visited
         self.transitions = trans_dic
         self.end_state = end
         self.start_state = start
         self.tokenhash = final 
-        return {
-                'alfabeto': self.alfabeto,
-                'start_state': self.start_state,
-                'end_state': self.end_state,
-                'transitions': self.transitions,
-                'hash tokens':self.tokenhash
-            }
+        #print(self.tokenhash)
+        # Crear una instancia de la clase Automata y asignar valores a sus atributos
+        self.afd = AFD(states=self.states, start=self.start_state, end=self.end_state, transitions=self.transitions, alphabet=self.alfabeto, tokenhash = self.tokenhash,getIdToken=self.getIdToken)
+        return  self.states,self.start_state, self.end_state, self.transitions, self.alfabeto,self.tokenhash, self.getIdToken
     
-    def to_dict(self):
-        miembros = inspect.getmembers(self)
-        atributos = {}
-        for nombre, valor in miembros:
-            if nombre not in ['tree', 'treeLF','nodes'] and not nombre.startswith('__') and not inspect.ismethod(valor):
-                atributos[nombre] = valor
-        return atributos
+    # def fix_cadena(self,cadena):
+    #     cadenas = []
+    #     string = ''
+    #     for i in cadena:
+    #         if i not in ['\n', ' ']:
+    #             string +=i
+    #         if i in ['\n', ' ']:
+    #             if string == '':
+    #                 continue
+    #             else:
+    #                 # if i == '\n':
+    #                 #     cadenas.append(string.strip())
+    #                 #     string = ''
+    #                 #     cadenas.append('\\n')
+    #                 # else:
+    #                     cadenas.append(string.strip())
+    #                     string = ''
+    #                     cadenas.append(i)
+    #     if string:
+    #         cadenas.append(string.strip())
 
-    def fix_cadena(self,cadena):
-        cadenas = []
-        string = ''
-        for i in cadena:
-            if i not in ['\n', ' ']:
-                string +=i
-            if i in ['\n', ' ']:
-                if string == '':
-                    continue
-                else:
-                    # if i == '\n':
-                    #     cadenas.append(string.strip())
-                    #     string = ''
-                    #     cadenas.append('\\n')
-                    # else:
-                        cadenas.append(string.strip())
-                        string = ''
-                        cadenas.append(i)
-        if string:
-            cadenas.append(string.strip())
+    #     return cadenas
 
-        return cadenas
-
-    def simulation(self,cadena):
-        transiciones = self.transitions
-        estado_actual = self.start_state
-        cadena=self.fix_cadena(cadena)
-        token = []
-        ID = []
-        self.getIdToken['error'] = 0
-        print("\033[1m Simulacion de Palabras \033[0m")
-        for palabra in cadena:
-            for simbolo in palabra:
-                if simbolo == '\n':
-                    simbolo ='\\n'
-                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
-                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
-                    else:
-                        print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
-                elif simbolo == '\t':
-                    simbolo ='\\t'
-                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
-                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
-                    else:
-                        print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
-                else:
-                    if simbolo in tuple(transiciones[tuple(estado_actual)]):
-                        estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
+    # def simulation(self,cadena):
+    #     transiciones = self.transitions
+    #     estado_actual = self.start_state
+    #     cadena=self.fix_cadena(cadena)
+    #     token = []
+    #     ID = []
+    #     self.getIdToken['error'] = 0
+    #     print("\033[1m Simulacion de Palabras \033[0m")
+    #     for palabra in cadena:
+    #         for simbolo in palabra:
+    #             if simbolo == '\n':
+    #                 simbolo ='\\n'
+    #                 if simbolo in tuple(transiciones[tuple(estado_actual)]):
+    #                     estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
+    #                 else:
+    #                     print(f"-> No se encontraron transiciones para '{simbolo}")
+    #                     token.append({0})
+    #                     break
+    #             elif simbolo == '\t':
+    #                 simbolo ='\\t'
+    #                 if simbolo in tuple(transiciones[tuple(estado_actual)]):
+    #                     estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
+    #                 else:
+    #                     print(f"-> No se encontraron transiciones para '{simbolo}")
+    #                     token.append({0})
+    #                     break
+    #             else:
+    #                 if simbolo in tuple(transiciones[tuple(estado_actual)]):
+    #                     estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
                     
-                    else:
-                        print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
-                        print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
-            else:
-                if estado_actual in self.end_state[0]:
-                    print(f"» La cadena '\033[1m{palabra}\033[0m' es aceptada por el autómata")
-                    token_num = set(estado_actual) & set(self.tokenhash)
-                    token.append(token_num)
-                else:
-                    print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
+    #                 else:
+    #                     print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
+    #                     print(f"-> No se encontraron transiciones para '{simbolo}")
+    #                     token.append({0})
+    #                     break
+    #         else:
+    #             if estado_actual in self.end_state[0]:
+    #                 print(f"» La cadena '\033[1m{palabra}\033[0m' es aceptada por el autómata")
+    #                 token_num = set(estado_actual) & set(self.tokenhash)
+    #                 token.append(token_num)
+    #             else:
+    #                 print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
 
-            estado_actual = self.start_state
+    #         estado_actual = self.start_state
         
-        # --- OBTENER TOKENS ---
-        #print(token)
-        token = [x for conjunto in token for x in conjunto]
+    #     # --- OBTENER TOKENS ---
+    #     #print(token)
+    #     token = [x for conjunto in token for x in conjunto]
         
-        for num in token:
-            for k,v in self.getIdToken.items():
-                if num == v:
-                    ID.append(k)
-        #print(ID)
-        return ID
+    #     for num in token:
+    #         for k,v in self.getIdToken.items():
+    #             if num == v:
+    #                 ID.append(k)
+    #     #print(ID)
+    #     return ID
