@@ -88,7 +88,15 @@ def convert_rules_to_dic(rules):
 
         else:
             if key !="" and vall !="":
-                dic_rules[key] = vall
+                if key == '+':
+                    key = '&'
+                    dic_rules[key] = vall
+                elif key == '*':
+                    key = '^'
+                    dic_rules[key] = vall
+                else:
+                
+                    dic_rules[key] = vall
 
 
     return dic_rules
@@ -145,7 +153,7 @@ def handle_data(contenido):
         else:
             rules.append(val)
 
-    #Vuelve la lista a un diccionario 
+    #Vuelve la lista a un diccionario    
     convert_prod_to_dic(prod)
     convert_rules_to_dic(rules)
     #print(dic_rules)
@@ -194,7 +202,7 @@ def add_or (prod):
                             exp2 += char
 
                     exp2 = exp2[1:]
-                    dic_prod[k] = f'({exp2})?'
+                    dic_prod[k] = f'({exp2})'
 
             elif k == 'letter':    
                 for i, char in enumerate(v):
@@ -217,7 +225,7 @@ def add_or (prod):
                             new_string = new_string[:-1]
                         exp2 = new_string                    
 
-                dic_prod[k] = f'({exp2})?'
+                dic_prod[k] = f'({exp2})'
         
             elif k == 'digit':
                 for i, char in enumerate(v):
@@ -240,7 +248,7 @@ def add_or (prod):
                                     else:
                                         exp2 += f'|{num}'
                 
-                dic_prod[k] = f'({exp2})?'
+                dic_prod[k] = f'({exp2})'
         else:
             pass
     return dic_prod
@@ -329,6 +337,7 @@ def generate_expresion(prod1):
                 pass
             elif j == '+'and dentro_corchetes is True:
                 data_in += '&'
+                string += f'|"&"'
             elif j == '*'and dentro_corchetes is True:
                 data_in += '^'   
             elif dentro_corchetes:
@@ -385,7 +394,9 @@ def generate_expresion(prod1):
     #print(expresion_final)
     #print(updated_proddictionary)
     #print(get_changed_values,'hh')
-    # print(dic_prod)
+    #print(dic_rules)
+    #print(dic_prod)
+ 
 
     expresion_key = expresion_key[1:]
     expresion_final = expresion_final[1:]

@@ -1,3 +1,4 @@
+
 '''
 Universidad del Valle de Guatemala
 Diseño de lenguajes de programación 
@@ -33,7 +34,8 @@ class AFD(Automata):
     def simulation(self,cadena):
         transiciones = self.transitions
         estado_actual = self.start_state
-        cadena=self.fix_cadena(cadena)
+        #cadena=self.fix_cadena(cadena)
+        cadena=list(cadena)
         token = []
         ID = []
         self.getIdToken['error'] = 0

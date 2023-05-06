@@ -5,7 +5,6 @@ Gabriela Poala Contreras Guerra
 '''
 
 def make_automata(states, start, end, transitions, alphabet, tokenhash, getIdToken):
-    
     with open('Automata.py') as archivo:
         Automata = archivo.read()
 

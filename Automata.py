@@ -11,4 +11,3 @@ class Automata():
         self.start_state = start
         self.end_state = end
         self.transitions = transitions
-    

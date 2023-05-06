@@ -175,7 +175,7 @@ class Direct:
             graph.edge(str(inicio), str(fin), label= str(label))
 
         
-        #graph.view()
+        graph.view()
 
     def construct(self):
         follow_tables = []
@@ -248,7 +248,7 @@ class Direct:
         states = []
         transitions = []
         end=[]
-        start =(self.tree.label['firstpos'])
+        start =tuple(sorted(self.tree.label['firstpos']))
         #print(start,'inicio')
         
         states.append(tuple(start))
@@ -313,7 +313,7 @@ class Direct:
         self.states = visited
         self.transitions = trans_dic
         self.end_state = end
-        self.start_state = start
+        self.start_state = tuple(start)
         self.tokenhash = final 
         #print(self.tokenhash)
         # Crear una instancia de la clase Automata y asignar valores a sus atributos
