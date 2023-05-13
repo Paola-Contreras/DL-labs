@@ -1,86 +1,44 @@
 --- TOKENS RECONOCIDOS ---
-NUMBER
-ws
-ID
-ID
-ID
-ID
-ws
-ID
-ID
-ID
-ID
-ws
-ID
-ID
-ID
-ws
-ID
-ID
-ID
-ID
-ID
-ws
-ws
-NUMBER
 ERROR LEXICO
-NUMBER
 ws
 ID
+ws
 ID
+ws
 ID
+ws
 ID
 ws
 ERROR LEXICO
 ws
-NUMBER
-NUMBER
-ws
 ID
-ID
-ID
-ID
-ws
-NUMBER
-NUMBER
-NUMBER
 ws
 ERROR LEXICO
 ws
+ERROR LEXICO
 ws
 ID
-ID
-ID
-ID
-ID
+ws
+ERROR LEXICO
+ws
+ERROR LEXICO
+ws
 ID
 ws
 ID
-ID
-ID
-ID
-ID
-ws
-ws
 ws
 PLUS
 ws
-NUMBER
 ERROR LEXICO
-NUMBER
 ws
 PLUS
 ws
-EQ
+ERROR LEXICO
 ws
 ID
 ws
 ERROR LEXICO
 ws
+ID
 ws
 ID
-NUMBER
-ws
-ID
-ID
-ERROR LEXICO

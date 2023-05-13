@@ -34,8 +34,8 @@ class AFD(Automata):
     def simulation(self,cadena):
         transiciones = self.transitions
         estado_actual = self.start_state
-        #cadena=self.fix_cadena(cadena)
-        cadena=list(cadena)
+        cadena=self.fix_cadena(cadena)
+        #cadena=list(cadena)
         token = []
         ID = []
         self.getIdToken['error'] = 0
@@ -79,10 +79,8 @@ class AFD(Automata):
                         estado_actual = tuple(transiciones[tuple(estado_actual)][simbolo])
                     
                     else:
-                        print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
                         print(f"-> No se encontraron transiciones para '{simbolo}")
-                        token.append({0})
-                        break
+                        continue
             else:
                 if estado_actual in self.end_state[0]:
                     print(f"» La cadena '\033[1m{palabra}\033[0m' es aceptada por el autómata")
@@ -90,7 +88,7 @@ class AFD(Automata):
                     token.append(token_num)
                 else:
                     print(f"» La cadena '\033[1m{palabra}\033[0m' no es aceptada por el autómata")
-
+                    token.append({0})
             estado_actual = self.start_state
         
         # --- OBTENER TOKENS ---

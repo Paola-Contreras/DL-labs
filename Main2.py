@@ -13,7 +13,7 @@ from Direct import *
 from make import *
 
 
-doc = 'ArchivosYALex/slr-4.yal'
+doc = 'ArchivosYALex/slr-1.yal'
 read_doc = y.mainYalex(doc)
 new_expresion = y.new_expresion
 pos = 1
