@@ -14,9 +14,9 @@ updated_proddictionary = {}
 
 def openFile (doc):
     with open(doc, 'r') as archivo:
-        print("-> Reading file......")
+        #print("-> Reading file......")
         content = archivo.read() 
-        print(f"-> File read '\033[1m {doc} \033[0m'\n")
+        #print(f"-> File read '\033[1m {doc} \033[0m'\n")
         content = content.replace('\t', '')
     return content
 
@@ -401,11 +401,11 @@ def generate_expresion(prod1):
     expresion_key = expresion_key[1:]
     expresion_final = expresion_final[1:]
    
-    print("\033[1m Expresion Resumida \033[0m")
-    print('-> ', expresion_key,'\n')
+    # print("\033[1m Expresion Resumida \033[0m")
+    # print('-> ', expresion_key,'\n')
     
-    print("\033[1m Expresion Extendida \033[0m")
-    print('-> ', expresion_final,'\n')
+    # print("\033[1m Expresion Extendida \033[0m")
+    # print('-> ', expresion_final,'\n')
 
     return expresion_final
 

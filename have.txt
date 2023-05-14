@@ -1,0 +1,96 @@
+    # def Follow(self):
+    #     SLRG = self.grammar.SLR_Grammar
+    #     labels = list(SLRG.keys())
+    #     followed = {k: set() for k in labels}
+    #     followed[labels[0]].add('$')
+    #     #print(SLRG)
+    #     for k, v in SLRG.items():
+    #         productions = v.split('|')
+    #         for production in productions:
+    #             production = production.strip()
+    #             symbols = production.split()
+    #             for i in range(len(symbols) - 1):
+    #                 if symbols[i] in labels:
+    #                     if symbols[i + 1] in labels:
+    #                         followed[symbols[i]].update(self.First(symbols[i + 1:]))
+    #                         followed[symbols[i]].discard('e')
+    #                     else:
+    #                         followed[symbols[i]].add(symbols[i + 1])
+        
+    #     #print(followed)
+
+
+
+     def GoTo(self):
+        SLRG= self.Aumented_SLRG
+        simbol = self.symbols
+        nt = self.grammar.production.nonTerminals
+        nt = [value for value in nt.values()]
+        t = self.grammar.tokens.T
+        produc =[]
+        stack = []
+        tempItem = []
+        transitions = []
+        
+        #print(simbol)
+        for k ,v in SLRG.items():
+            for j in v:
+                produc.append(f'{k} -> . {j}')
+        self.UpdateProd = produc
+        start = produc[0]
+        #print(produc)
+        Fc = self.Closure(start)
+        stack.append(Fc)
+
+        for sym in simbol:
+            tempItem = []
+            new_items_added = False
+            for element in stack:
+                print(element,'NEW')
+                print(sym,'CAMBIO')
+                for prod in element:
+                    print(prod,'EVAl')
+                    p = prod.split(' ')
+                    dot_pos = p.index('.')
+                    if dot_pos + 1 < len(p):
+                        sigue = p[dot_pos+1]
+                    if sym == sigue:
+                        dot_ = p.index('.')
+                        if dot_ + 1 < len(p):
+                            # Intercambiar los elementos adyacentes al punto
+                            p[dot_], p[dot_ + 1] = p[dot_ + 1], p[dot_]
+                        
+                        dot_new = p.index('.')
+                        if dot_new + 1 < len(p):
+                            new = p[dot_new+1]
+                            if new in t:
+                                n = ' '.join(map(str, p))
+                                tempItem.append(n)
+                                new_items_added = True
+                            elif new in nt:
+                                n = ' '.join(map(str, p))
+                                c = self.Closure(n)
+                                for i in c:
+                                    if i not in tempItem:
+                                        tempItem.append(i)
+                                        new_items_added = True
+                                #print(c,'MISSING')
+                        elif p[-1] == '.':
+                            n = ' '.join(map(str, p))
+                            tempItem.append(n)
+                            new_items_added = True
+                            
+
+
+
+
+                        #print(n,'cam')
+                        #print(sym,p)
+            if new_items_added:
+                stack.append(tempItem)
+            #print(tempItem,'alo')
+            # print()
+            # for i in stack:
+            #     print (i)
+            #print(stack,'FIN')
+        print(len(stack))
