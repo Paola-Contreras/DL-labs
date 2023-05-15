@@ -294,12 +294,12 @@ class Direct:
         filtrada = [tupla for tupla in visited if any(elem in final for elem in tupla)]
         end.append(filtrada)
         
-        #print('\n',transitions)
+        print('\n',transitions)
         #print(visited,'VISITED')
         #print(end)
         trans, end_s, start_s= self.convert(transitions,end,start)
         # print(end_s)
-        # print(trans)
+        #print(trans)
         self.graph_afd( trans, end_s, start_s)
         trans_dic = {}
 

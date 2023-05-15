@@ -94,3 +94,48 @@
             #     print (i)
             #print(stack,'FIN')
         print(len(stack))
+
+
+
+def Closure(self,production):
+        closures = []
+        nt = self.grammar.production.nonTerminals
+        nt = [value for value in nt.values()]
+        t = self.grammar.tokens.T
+        label_eval = []
+        already = []
+
+        splited = production.split(' ')
+        dot_pos = splited.index('.')
+        
+        #print(production)
+        #print(splited)
+        # print(self.UpdateProd)
+        label_eval.append(splited[dot_pos+1])
+        already.append(splited[dot_pos+1])
+        closures.append(production)
+
+        while len(label_eval) > 0:
+            in_Nt = label_eval.pop()
+            if in_Nt in t:
+                #print('Es un terminal, se termina')
+                continue
+            elif in_Nt in nt:
+                #print('Es un no terminal')
+                #print(in_Nt,'l')
+                for P in self.UpdateProd:
+                    P = P.split(' -> ')
+                    #print(P)
+                    if in_Nt == P[0]:
+                        new_eval = P[1]
+                        #print(P[1],'PROD')  
+                        dot_index = new_eval.index('.')
+                        next_character = new_eval[dot_index + 2]
+                        closures.append(f'{in_Nt} -> {new_eval}')
+                        if next_character not in already:
+                            already.append(next_character)
+                            label_eval.append(next_character)
+                        
+        
+        #print(closures)
+        return closures

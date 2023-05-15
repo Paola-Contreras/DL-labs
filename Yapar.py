@@ -5,6 +5,8 @@ Gabriela Poala Contreras Guerra
 '''
 
 import Read_Yapar as yapar
+import graphviz
+
 prod = yapar.dic_productions
 tok = yapar.token_dic
 
@@ -306,7 +308,6 @@ class YAPAR():
                             already.append(next_character)
                             label_eval.append(next_character)
                         
-        
         #print(closures)
         return closures
 
@@ -362,10 +363,34 @@ class YAPAR():
         #print(item)
         #print(simbol)
         #print(stack,'stack')
-        transitions.append((item,simbol,stack))
+
+        if len(stack) != 0:
+            transitions.append((item,stack,simbol))
+
         return stack, transitions
         
-    
+
+    def graph_afd(self,trans):
+        graph = graphviz.Digraph('AFD Directo', filename='SLR_Automata', format= 'png')
+        graph.attr(rankdir='LR',labelloc="t",)
+        
+        
+        for transicion in trans:
+            T = transicion[0]
+            print(T,'T')
+            inicio, fin, label = T[0], T[1], T[2]
+            print(inicio,'INI')
+            print(fin,'FIN')
+            print(label,'LAB')
+            
+        
+            graph.node(str(inicio), shape='square', rank='same')
+            graph.node(str(fin), shape='square', rank='same')
+            graph.attr('node', shape='square')
+            graph.edge(str(inicio), str(fin), label=str(label))
+
+        graph.view()
+
     def Automata(self):
         simbol = self.symbols
         temp = []
@@ -387,12 +412,17 @@ class YAPAR():
                 if ss != []:
                     if ss not in evaluated and ss not in temp and temp != Fc:
                         temp.append(ss)
-                trans.append(tran)
+                    trans.append(tran)
                     
-            print(len(temp))
+            #print(len(temp))
             #print(tran)
         #print(temp,'HAVING')
-        print(trans,'FIN')
+        #print(trans,'FIN')
+        #for tt in evaluated:
+        fin = [(evaluated[1],"Aceptacion",'$')]
+        trans.append(fin)
+        #evaluated.append()
+        self.graph_afd(trans)
 
         
             
