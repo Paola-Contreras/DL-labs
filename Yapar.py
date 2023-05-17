@@ -204,7 +204,8 @@ class YAPAR():
             first_set[k] = first_post
             first_post =[]
         setF = self.replace_rules(first_set)
-        #print(setF)
+        print('---FIRST---')
+        print(setF)
         return setF
     
     def remove_spaces(self,s):
@@ -238,6 +239,7 @@ class YAPAR():
                     followed[lab] = followed[lab].union(followed[k])
                 elif  len(P) == 1:
                     followed[P[0]] = followed[P[0]].union(followed[k])
+        #print('---FOLLOWED---')
         #print(followed)
         return followed
 
@@ -377,11 +379,11 @@ class YAPAR():
         
         for transicion in trans:
             T = transicion[0]
-            print(T,'T')
+            #print(T,'T')
             inicio, fin, label = T[0], T[1], T[2]
-            print(inicio,'INI')
-            print(fin,'FIN')
-            print(label,'LAB')
+            # print(inicio,'INI')
+            # print(fin,'FIN')
+            # print(label,'LAB')
             
         
             graph.node(str(inicio), shape='square', rank='same')
@@ -422,7 +424,7 @@ class YAPAR():
         fin = [(evaluated[1],"Aceptacion",'$')]
         trans.append(fin)
         #evaluated.append()
-        self.graph_afd(trans)
+        #self.graph_afd(trans)
 
         
             
