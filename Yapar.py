@@ -5,6 +5,7 @@ Gabriela Poala Contreras Guerra
 '''
 
 import Read_Yapar as yapar
+from prettytable import PrettyTable
 import graphviz
 
 prod = yapar.dic_productions
@@ -156,6 +157,7 @@ class YAPAR():
         self.Aumented_SLRG = self.aument_grammar()
         self.UpdateProd = self.new_grammar()
         self.Move = self.Automata()
+        self.S_Table = self.Table(self.Move)
 
     def s_grammar(self):
         nt = self.grammar.production.nonTerminals
@@ -204,8 +206,8 @@ class YAPAR():
             first_set[k] = first_post
             first_post =[]
         setF = self.replace_rules(first_set)
-        print('---FIRST---')
-        print(setF)
+        # print('---FIRST---')
+        # print(setF)
         return setF
     
     def remove_spaces(self,s):
@@ -239,8 +241,8 @@ class YAPAR():
                     followed[lab] = followed[lab].union(followed[k])
                 elif  len(P) == 1:
                     followed[P[0]] = followed[P[0]].union(followed[k])
-        #print('---FOLLOWED---')
-        #print(followed)
+        # print('---FOLLOWED---')
+        # print(followed)
         return followed
 
     def aument_grammar(self):
@@ -314,7 +316,7 @@ class YAPAR():
         return closures
 
     
-    def GoTo(self,item,simbol):
+    def Moved(self,item,simbol):
         nt = self.grammar.production.nonTerminals
         nt = [value for value in nt.values()]
         t = self.grammar.tokens.T
@@ -370,8 +372,7 @@ class YAPAR():
             transitions.append((item,stack,simbol))
 
         return stack, transitions
-        
-
+    
     def graph_afd(self,trans):
         graph = graphviz.Digraph('AFD Directo', filename='SLR_Automata', format= 'png')
         graph.attr(rankdir='LR',labelloc="t",)
@@ -410,7 +411,7 @@ class YAPAR():
             evaluated.append(item)
             for sym in simbol:
                 #print(item)
-                ss, tran = self.GoTo(item,sym)
+                ss, tran = self.Moved(item,sym)
                 if ss != []:
                     if ss not in evaluated and ss not in temp and temp != Fc:
                         temp.append(ss)
@@ -425,14 +426,154 @@ class YAPAR():
         trans.append(fin)
         #evaluated.append()
         #self.graph_afd(trans)
-
-        
-            
-
-
-
+        self.ADF_TRANS = trans
+        #print(evaluated)
+        #print(trans)
+        return trans, evaluated 
 
     
+    def Table(self, productions):
+        prod,states = productions
+        #print(states)
+        states_num = {}
+        table ={}
+
+        label =[]
+        nonT =[]
+        tok = []
+
+        Individual_prod =[]
+        ends_point = []
+
+        #grama = self.grammar.SLR_Grammar
+       # print(grama)
+
+        for indice, valor in enumerate(states):
+            states_num[valor[0]]= indice
+            table[indice] =[]
+        #print(states_num) 
+
+        for i in self.grammar.production.nonTerminals:
+            label.append(i[0].upper())
+            nonT.append(i[0].upper())
+
+        tok.append("$")
+        for i in self.grammar.tokens.T:
+            label.append(i)
+            tok.append(i)
+        label.append("$")
+
+        for i in prod:
+            if i[0][2] in nonT:
+                #print(i[0],'AAA')
+                for key in states_num.keys():
+                    if key in i[0][1]:
+                        #print(i[0][0][0])
+                        k = states_num[i[0][0][0]]
+                        table.setdefault(k, []).append((i[0][2],states_num[key]))
+                        #print(key,'IN')
+            elif i[0][2] in tok:
+                for key in states_num.keys():
+                    if key in i[0][1]:
+                        #print(i[0][0][0])
+                        k = states_num[i[0][0][0]]
+                        table.setdefault(k, []).append((i[0][2],f"s{states_num[key]}"))
+                        #print(key,'IN')
+                if i[0][2] == '$':
+                    k = states_num[i[0][0][0]]
+                    #print(k)
+                    table.setdefault(k, []).append((i[0][2],"acc"))
+            if i[0][0] not in Individual_prod:
+                Individual_prod.append(i[0][0])
+            elif i[0][1] not in Individual_prod:
+                Individual_prod.append(i[0][1])
+
+
+
+
+        for j in Individual_prod:
+            #print(j)
+            for val in j:
+                if val.endswith(" ."):
+                    #print(val)
+                    if 'E`' in val:
+                        pass
+                    else:
+                        ends_point.append(val)
+
+        #print(self.FollowSet)
+        #print(self.grammar.SLR_Grammar)
+
+        Invert_gramar = {}
+
+        for clave, valor in self.grammar.SLR_Grammar.items():
+            partes = valor.split("|")
+            parte_izquierda = partes[0].strip()
+            parte_derecha = partes[1].strip()
+
+            Invert_gramar[parte_izquierda] = clave
+            Invert_gramar[parte_derecha] = clave
+
+        #print(Invert_gramar,'aqui')
+
+        end = []
+        for i in ends_point:
+            indice_flecha = i.index("->")
+            parte_izquierda = i[:indice_flecha].strip()
+            parte_derecha = i[indice_flecha + 2:].strip()
+            #print(parte_izquierda)
+            a = self.FollowSet [parte_izquierda]
+            end.append([a,parte_izquierda,parte_derecha.rstrip(' .')])
+            #print(a,parte_izquierda,'AQUI')
+        print(end)
+
+        num_grammar = {}
+        for indice, (clave, valor) in enumerate(Invert_gramar.items() , start=1):
+            num_grammar[clave] = indice
+            #print(indice, clave, valor)
+
+        print(num_grammar)
+
+
+
+        for el in end:
+            print(el[2])
+            print(num_grammar[el[2]])
+            print(el[0])
+            for it in el[0]:
+                print(it)
+                if it not in nonT:
+                    table.setdefault(num_grammar[el[2]], []).append((it[0],f"r{num_grammar[el[2]]}"))
+
+
+        # Crear una tabla
+        tabla = PrettyTable()
+        tabla.field_names = ['States'] + label
+
+        # Agregar los datos a la tabla
+        for key, valores in table.items():
+            fila = []
+            fila.append(key)
+            for encabezado in label:
+                for tupla in valores:
+                    if tupla[0] == encabezado:
+                        fila.append(tupla[1])
+                        break
+                else:
+                    fila.append('')
+            tabla.add_row(fila)
+
+
+        print(tabla)
+        print(table)
+        #print(label)
+        #print(Individual_prod)
+
+
+
+
+
+
 
 #print (docs)
 YAPAR(tok,prod)

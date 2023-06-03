@@ -116,8 +116,8 @@ def handleData(contenido,yalex):
     return token_dic, dic_productions
 
 def main_read_yapar():
-    doc = 'ArchivosYALex/slr-4.yal'
-    docs = openFile("ArchivosYapar/slr-4.yalp")
+    doc = 'ArchivosYALex/slr-1.yal'
+    docs = openFile("ArchivosYapar/slr-1.yalp")
     t,p = handleData(docs,doc)
     return t,p 
 
