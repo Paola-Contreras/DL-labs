@@ -489,8 +489,6 @@ class YAPAR():
                 Individual_prod.append(i[0][1])
 
 
-
-
         for j in Individual_prod:
             #print(j)
             for val in j:
@@ -525,23 +523,21 @@ class YAPAR():
             a = self.FollowSet [parte_izquierda]
             end.append([a,parte_izquierda,parte_derecha.rstrip(' .')])
             #print(a,parte_izquierda,'AQUI')
-        print(end)
+        #print(end)
 
         num_grammar = {}
         for indice, (clave, valor) in enumerate(Invert_gramar.items() , start=1):
             num_grammar[clave] = indice
             #print(indice, clave, valor)
 
-        print(num_grammar)
-
-
+        #print(num_grammar)
 
         for el in end:
-            print(el[2])
-            print(num_grammar[el[2]])
-            print(el[0])
+            # print(el[2])
+            # print(num_grammar[el[2]])
+            # print(el[0])
             for it in el[0]:
-                print(it)
+                #print(it)
                 if it not in nonT:
                     table.setdefault(num_grammar[el[2]], []).append((it[0],f"r{num_grammar[el[2]]}"))
 
@@ -563,9 +559,9 @@ class YAPAR():
                     fila.append('')
             tabla.add_row(fila)
 
-
+        print(f"\t\t   ---\033[1m TABLA \033[0m---")
         print(tabla)
-        print(table)
+        #print(table)
         #print(label)
         #print(Individual_prod)
 
